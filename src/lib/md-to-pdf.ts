@@ -81,14 +81,16 @@ export const convertMdToPdf = async (
 		config.dest = 'path' in input ? getOutputFilePath(input.path, config.as_html ? 'html' : 'pdf') : 'stdout';
 	}
 
-	const highlightStylesheet = resolve(
-		dirname(require.resolve('highlight.js')),
-		'..',
-		'styles',
-		`${config.highlight_style}.css`,
-	);
-
-	config.stylesheet = [...new Set([...config.stylesheet, highlightStylesheet])];
+	const highlightStylesheet = [];
+	if (config.highlight_style !== '') {
+		 highlightStylesheet.push(resolve(
+			dirname(require.resolve('highlight.js')),
+			'..',
+			'styles',
+			`${config.highlight_style}.css`,
+		));
+	}
+	config.stylesheet = [...new Set([...config.stylesheet, ...highlightStylesheet])];
 
 	const html = getHtml(md, config);
 
